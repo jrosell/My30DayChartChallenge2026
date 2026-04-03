@@ -129,8 +129,8 @@ Reporting Carrier On-Time Performance (1987–present)
 
 ## Status
 
-[x] 1. Comparisons: Part-to-Whole. Waffle flight status using 100 tiles On Time → Delayed → Cancelled. How reliable are US flights overall?
-[ ] 2. Comparisons: Pictogram. Top 2 airports, normalized pictogram faceted 3x3 plot 100 icon per aiport and color status?
-[ ] 3. Comparisons: Mosaic. Are flights more delayed in winter/summer? c(12,1,2) ~ "Winter", c(3,4,5) ~ "Spring", c(6,7,8) ~ "Summer", TRUE ~ "Fall"
-[ ] 4. Comparisons: Slope. rank(desc(on_time_rate)) top 10 and highlight biggest improver and biggest drop
-[ ] 5. Comparisons: Experimental. Heatmap of mean(arr_delay >= 15) by airline and airport
+- [x] 1. Comparisons: Part-to-Whole. Waffle flight status using 100 tiles On Time → Delayed → Cancelled. How reliable are US flights overall?
+- [ ] 2. Comparisons: Pictogram. Top 2 airports, normalized pictogram faceted 3x3 plot 100 icon per aiport and color status?
+- [ ] 3. Comparisons: Mosaic. Are flights more delayed in winter/summer? c(12,1,2) ~ "Winter", c(3,4,5) ~ "Spring", c(6,7,8) ~ "Summer", TRUE ~ "Fall"
+- [ ] 4. Comparisons: Slope. rank(desc(on_time_rate)) top 10 and highlight biggest improver and biggest drop
+- [ ] 5. Comparisons: Experimental. Heatmap of mean(arr_delay >= 15) by airline and airport
