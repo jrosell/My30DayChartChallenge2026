@@ -1,0 +1,146 @@
+---
+title: "Day 1. Comparison: Part-to-whole"
+date: "2026-04-01"
+categories: [comparisons]
+image: "/posts/1.png"
+image-alt: "Did U.S. flight reliability improve in 2025? No, it didn't. Delays increased from 20% to 22%."
+---
+
+```{r}
+#| echo: false
+#| results: "hide"
+#| warning: false
+#| message: false
+
+pak::pak("jrosell/jrrosell")
+pkgload::load_all()
+library(tidyverse)
+library(ggplot2)
+library(jrrosell)
+library(fs)
+library(ggtext)
+library(patchwork)
+
+theme_set_roboto_darkblue()
+fs::dir_create(here::here("public", "posts"))
+flights <- import_flights()
+carrier_lookup <- import_carriers()
+```
+
+```{r}
+#| echo: false
+#| results: "hide"
+#| warning: false
+#| message: false
+
+waffle_data <- flights |>
+  filter(near(year, 2025) | near(year, 2024)) |>
+  mutate(
+    Status = case_when(
+      cancelled == 1 ~ "Cancelled",
+      arr_delay >= 15 ~ "Delayed",
+      TRUE ~ "On Time"
+    )
+  ) |>
+  group_by(year) |>
+  count(Status) |>
+  mutate(
+    Status = factor(Status, levels = c("On Time", "Delayed", "Cancelled")),
+    fraction = n / sum(n),
+    tiles_round = round(fraction * 100),
+    diff_tiles = 100 - sum(tiles_round),
+    max_fraction = fraction == max(fraction),
+    tiles = if_else(
+      diff_tiles > 0 & max_fraction,
+      tiles_round + diff_tiles,
+      tiles_round
+    )
+  ) |>
+  select(-tiles_round, -diff_tiles, -max_fraction) |>
+  ungroup() |>
+  mutate() |>
+  print()
+
+p <- waffle_data |>
+  group_by(year) |>
+  uncount(tiles) |>
+  mutate(
+    id = row_number(),
+    x = (id - 1) %% 10,
+    y = (id - 1) %/% 10
+  ) |>
+  ungroup() |>
+  ggplot(aes(x = x, y = y, fill = Status)) +
+  geom_tile(color = "white", linewidth = 0.5) +
+  facet_wrap(~year) +
+  coord_equal() +
+  scale_y_reverse() +
+  scale_fill_manual(
+    values = c(
+      "On Time" = "#1b9e77",
+      "Delayed" = "#7570b3",
+      "Cancelled" = "#d95f02"
+    )
+  ) +
+  labs(
+    title = "Did U.S. flight reliability improve in 2025?",
+    subtitle = "No, it didn't. Delays increased from 20% to 22%.",
+    x = "",
+    y = "",
+    fill = "",
+    caption = "**Data source:** Reporting Carrier On-Time Performance from transtats.bts.gov\n<br>**Author:** Jordi Rosell (@jrosell) _#30DayChartChallenge_"
+  ) +
+  theme(
+    plot.title.position = "panel",
+    plot.subtitle.position = "panel",
+    legend.position = "bottom",
+    legend.text = element_text(size = 18),
+    legend.key.width = unit(16, "pt"),
+    legend.key.height = unit(16, "pt"),
+    legend.key.spacing.x = unit(16, "pt"),
+    plot.title = element_text(
+      size = 37,
+      margin = margin(t = 15, r = 0, b = 0, l = 20)
+    ),
+    plot.subtitle = element_text(
+      size = 24,
+      margin = margin(t = 15, r = 0, b = 20, l = 20)
+    ),
+    strip.placement = "outside",
+    strip.text = element_text(
+      size = 30,
+      hjust = 0,
+      margin = margin(b = 10, l = 20)
+    ),
+    strip.background = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.caption = element_markdown(
+      family = "Roboto",
+      size = 14,
+      color = "gray40",
+      lineheight = 2,
+      margin = margin(t = 20, r = 20, b = 0, l = 0)
+    ),
+    plot.margin = margin(0, 8, 8, 0)
+  )
+
+ggsave(
+  here::here("posts", "1.png"),
+  plot = p,
+  width = 1024,
+  height = 768,
+  dpi = 72,
+  units = "px"
+)
+fs::file_copy(
+  here::here("posts", "1.png"),
+  here::here("public", "posts", "1.png"),
+  overwrite = TRUE
+)
+magick::image_read(here::here("posts", "1.png"))
+```
+
+![Day 1](/posts/1.png)

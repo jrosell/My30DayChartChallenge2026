@@ -1,0 +1,104 @@
+---
+image: "/posts/1a.png"
+title: "Comparison"
+description: "Comparing airlines by flight status"
+categories:
+  - comparisons
+author: "Jordi Rosell"
+date: "2026-04-01"
+page-layout: full
+draft: true
+---
+
+
+```{r}
+pak::pak("jrosell/jrrosell")
+pkgload::load_all()
+library(tidyverse)
+library(ggplot2)
+library(jrrosell)
+library(ggtext)
+theme_set_roboto_darkblue()
+```
+
+```{r}
+flights <- import_flights()
+carrier_lookup <- import_carriers()
+
+flights_summary <- flights |>
+  filter(near(year, 2025)) |>
+  mutate(
+    ArrDel15 = ifelse(arr_delay >= 15, "Delayed", "On Time"),
+    Cancelled = ifelse(cancelled == 1, "Cancelled", "Not Cancelled")
+  ) |>
+  mutate(
+    Status = case_when(
+      Cancelled == "Cancelled" ~ "Cancelled",
+      ArrDel15 == "Delayed" ~ "Delayed",
+      TRUE ~ "On Time"
+    )
+  ) |>
+  group_by(carrier, Status) |>
+  summarise(n = n(), .groups = "drop") |>
+  group_by(carrier) |>
+  mutate(
+    fraction = n / sum(n),
+    ontime_fraction = fraction[Status == "On Time"]
+  ) |>
+  ungroup() |>
+  left_join(carrier_lookup, by = c("carrier" = "Code")) |>
+  mutate(carrier = coalesce(Description, carrier)) |>
+  mutate(
+    Status = factor(Status, levels = c("Cancelled", "Delayed", "On Time")),
+    carrier = fct_reorder(carrier, ontime_fraction)
+  ) |>
+  glimpse()
+```
+
+```{r}
+p <- flights_summary |>
+  ggplot(aes(x = carrier, y = fraction, fill = Status)) +
+  geom_col(width = 0.95) +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(
+    title = "Comparing airlines by flight status",
+    subtitle = "What are the airlines with better %on-time flights in the U.S. (2025)",
+    x = "",
+    y = "",
+    fill = "",
+    caption = "Data source: Reporting Carrier On-Time Performance from transtats.bts.gov\nAuthor: Jordi Rosell (@jrosell)"
+  ) +
+  scale_fill_manual(
+    values = c("#d95f02", "#7570b3", "#1b9e77")
+  ) +
+  theme(
+    panel.grid.major = element_blank(),
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.key.width = unit(8, "pt"),
+    legend.key.height = unit(8, "pt"),
+    legend.key.spacing.x = unit(16, "pt"),
+    plot.title = element_text(size = 25, margin = margin(5, 0, 5, 0)),
+    plot.subtitle = element_text(size = 16),
+    plot.title.position = "plot",
+    plot.margin = margin(t = 5, r = 5, b = 5, l = 5),
+    plot.caption = element_text(
+      color = "gray40",
+      lineheight = 0.5,
+      margin = margin(t = 0, r = 8, b = 0, l = 0)
+    )
+  ) +
+  guides(fill = guide_legend(reverse = TRUE)) +
+  coord_flip()
+
+p
+# ggsave(
+#   here::here("posts", "1a.png"),
+#   plot = p,
+#   width = 1024,
+#   height = 768,
+#   dpi = 72,
+#   units = "px"
+# )
+# magick::image_read(here::here("posts", "1a.png"))
+```

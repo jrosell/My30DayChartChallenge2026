@@ -1,0 +1,24 @@
+---
+listing:
+  page-size: 36
+  contents: "posts/*/index.qmd"
+  feed: false
+  sort: "date desc"
+  type: grid
+  categories: true
+  sort-ui: false
+  filter-ui: false
+  fields: [image, date, title, description]
+page-layout: full
+title-block-banner: true
+---
+
+As every year, the goal for the [#30DayChartChallenge 2026 edition](https://github.com/30DayChartChallenge/Edition2026) is to create one plot per day for 30 days.
+
+My plan is to:
+
+- Use the same [dataset](https://transtats.bts.gov/TableInfo.asp?gnoyr_VQ=FGJ&QO_fu146_anzr=b0-gvzr&V0s1_b0yB=D) throughout all 30 days.
+- Save the [R code in this repo ](https://github.com/jrosell/My30DayChartChallenge2026)and leverage R development tools.
+- Publish a [Quarto website on GitHub Pages](https://jrosell.github.io/My30DayChartChallenge2026) to showcase the plots.
+
+Here my charts:

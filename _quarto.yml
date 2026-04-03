@@ -1,0 +1,27 @@
+project:
+  type: website
+  output-dir: public
+  render:
+    - index.qmd
+    - "posts/*/index.qmd"
+
+website:
+  title: "My 30 Day Chart Challenge 2026"
+  description: 'As every year, the goal for this 2026 edition is to make a plot every day for 30 days.'
+  site-url: https://jrosell.github.io/My30DayChartChallenge2026
+  repo-url: https://github.com/jrosell/My30DayChartChallenge2026
+  navbar:
+    right:
+      - icon: github
+        href: https://github.com/jrosell/My30DayChartChallenge2026
+        aria-label: GitHub repo
+
+  page-footer:
+    right: "#30DayChartChallenge"
+    left: |
+      Author: Jordi Rosell
+
+format:
+  html:
+    theme: litera
+    mainfont: "Robot"

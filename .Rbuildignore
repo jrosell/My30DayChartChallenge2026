@@ -1,0 +1,12 @@
+^[.]?air[.]toml$
+^\.vscode$
+\.code-workspace
+^data/
+^_quarto\.yml
+^index\.qmd
+^LICENSE\.md$
+^\.quarto$
+^_freeze/
+^public/
+^posts/
+^Makefile
