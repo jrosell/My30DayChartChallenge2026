@@ -4,5 +4,7 @@ render:
 	quarto render
 
 serve:
-	serve public
-	
+	serve docs
+
+deploy:
+	quarto publish gh-pages

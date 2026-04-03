@@ -7,6 +7,6 @@
 ^LICENSE\.md$
 ^\.quarto$
 ^_freeze/
-^public/
+^docs/
 ^posts/
 ^Makefile

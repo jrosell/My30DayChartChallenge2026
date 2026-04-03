@@ -8,3 +8,4 @@
 **/*.quarto_ipynb
 data/
 _freeze
+docs/
